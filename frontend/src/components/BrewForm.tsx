@@ -21,6 +21,7 @@ export const BrewForm = ({ onSubmit }: { onSubmit: (data: BrewData) => void }) =
       water: Number(formData.water),
       minutes: formData.minutes ? Number(formData.minutes) : undefined,
       seconds: formData.seconds ? Number(formData.seconds) : undefined,
+      notes: formData.notes || undefined
     } as BrewData);
   };
 

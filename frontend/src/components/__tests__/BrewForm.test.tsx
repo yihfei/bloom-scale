@@ -1,8 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-// We import the component even though it doesn't exist yet. 
-// Your IDE will show a red squiggly line—this is normal in TDD!
 import { BrewForm } from '../BrewForm';
+import type { BrewData } from '../../types/brew';
 
 describe('BrewForm Component', () => {
   const mockSubmit = vi.fn();
@@ -29,14 +28,19 @@ describe('BrewForm Component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /save brew/i }));
 
-    // Verify the data structure sent to the parent
-    expect(mockSubmit).toHaveBeenCalledWith(expect.objectContaining({
+    const expectedPayload: BrewData = {
       coffee: 'Ethiopia',
       roaster: 'Home Roast',
       grindSize: '24 clicks',
-      dose: 18,   // Should be a number
-      water: 300  // Should be a number
-    }));
+      dose: 18,
+      water: 300,
+      notes: undefined,
+      temp: undefined,
+      minutes: undefined,
+      seconds: undefined
+    };
+
+    expect(mockSubmit).toHaveBeenCalledWith(expectedPayload);
   });
 
   it('includes optional fields in submission if provided', () => {
@@ -57,7 +61,7 @@ describe('BrewForm Component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /save brew/i }));
 
-    expect(mockSubmit).toHaveBeenCalledWith({
+    const expectedPayload: BrewData = {
       coffee: 'Decaf',
       roaster: 'Local',
       grindSize: 'Fine',
@@ -67,7 +71,8 @@ describe('BrewForm Component', () => {
       minutes: 2,
       seconds: 30,
       notes: 'Blueberry and chocolate'
-    });
+    }
+    expect(mockSubmit).toHaveBeenCalledWith(expectedPayload);
   });
 });
 
@@ -91,12 +96,15 @@ describe('BrewForm Component - Negative Cases', () => {
   it('does not submit if numeric fields contain non-numeric strings', () => {
     render(<BrewForm onSubmit={mockSubmit} />);
 
-    // Fill out compulsory fields, but put "abc" in the Dose
     fireEvent.change(screen.getByLabelText(/coffee/i), { target: { value: 'Ethiopia' } });
     fireEvent.change(screen.getByLabelText(/dose/i), { target: { value: 'abc' } });
+    fireEvent.change(screen.getByLabelText(/roaster/i), { target: { value: 'Local' } });
+    fireEvent.change(screen.getByLabelText(/grind size/i), { target: { value: 'Fine' } });
+    fireEvent.change(screen.getByLabelText(/water/i), { target: { value: '250' } })
 
     fireEvent.click(screen.getByRole('button', { name: /save brew/i }));
 
+    // submit function not called as validation should fail and prevent submission
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 });

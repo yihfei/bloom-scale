@@ -1,6 +1,7 @@
 import './App.css'
 import { BrewForm } from './components/BrewForm'
 import { BrewList } from './components/BrewList'
+import { BeanForm } from './components/BeanForm'
 import type { SavedBrew } from './types/brew'
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
 
   return (
     <>
-      
+      <BeanForm onSubmit={(data) => console.log('Bean data submitted:', data)} />
       <BrewForm onSubmit={(data) => console.log('Brew data submitted:', data)} />
       <BrewList brews={savedBrews} />
     </>

@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
+import type { BrewData } from '../types/brew';
 
-interface BrewData {
-  coffee: string;
-  roaster: string;
-  grindSize: string;
-  temp?: number;
-  dose: number;
-  water: number;
-  minutes?: number;
-  seconds?: number;
-  notes?: string;
-}
 
 export const BrewForm = ({ onSubmit }: { onSubmit: (data: BrewData) => void }) => {
   const [formData, setFormData] = useState({
@@ -19,7 +9,7 @@ export const BrewForm = ({ onSubmit }: { onSubmit: (data: BrewData) => void }) =
     minutes: '', seconds: '', notes: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     // Simple validation
     if (!formData.coffee || !formData.roaster || !formData.dose || !formData.water) return;
